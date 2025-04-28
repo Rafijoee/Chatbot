@@ -12,13 +12,23 @@
         </div>
 
         <div class="mb-4 relative">
+            @if ($showPassword)
             <input 
-                wire:model="password" 
-                :type="$showPassword ? 'text' : 'password'"
-                class="w-full p-2 border rounded" 
-                placeholder="Password" 
-                required
-            >
+            wire:model="password" 
+            type='password'
+            class="w-full p-2 border rounded" 
+            placeholder="Password" 
+            required
+            >   
+            @else
+            <input 
+            wire:model="password" 
+            type='text'
+            class="w-full p-2 border rounded" 
+            placeholder="Password" 
+            required
+            > 
+            @endif
             <button type="button" wire:click="$toggle('showPassword')" class="absolute right-2 top-2 text-sm">
                 {{ $showPassword ? 'Hide' : 'Show' }}
             </button>
