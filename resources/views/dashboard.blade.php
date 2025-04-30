@@ -15,5 +15,11 @@
             Logout
         </button>
     </form>
+    <br>
+    <br>
+    @foreach ($users as  $user)
+    <a href="{{ route('chat.single', ['id' => $user->id]) }}">Chat</a>
+        
+    @endforeach
 </body>
 </html>
