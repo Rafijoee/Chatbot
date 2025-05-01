@@ -32,7 +32,7 @@ class SingleChat extends Component
 
     public function render()
     {
-        $this->chats = Chat::where(function ($query) {
+        $chats = Chat::with('user')->where(function ($query) {
             $query->where('user_id', $this->user_id)
                   ->where('to_id', $this->to_id);
         })->orWhere(function ($query) {
