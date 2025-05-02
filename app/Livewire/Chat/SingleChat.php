@@ -40,6 +40,8 @@ class SingleChat extends Component
                   ->where('to_id', $this->user_id);
         })->orderBy('created_at')->get();
     
+        
+        dd($chats);
         return view('livewire.chat.single-chat');
     }
 }
