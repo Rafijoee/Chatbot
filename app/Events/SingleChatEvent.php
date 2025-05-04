@@ -5,17 +5,16 @@ namespace App\Events;
 use App\Models\Chat;
 use App\Models\User;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
+
 
 class SingleChatEvent implements ShouldBroadcastNow
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, SerializesModels;
 
     public $message;
     public $username;
@@ -23,48 +22,42 @@ class SingleChatEvent implements ShouldBroadcastNow
     public $to_id;
 
     public function __construct($user_id, $message, $to_id)
-    {   
-        // Save the chat to database
+    {
+        // Simpan pesan di database
         Chat::create([
             'user_id' => $user_id,
             'message' => $message,
             'to_id' => $to_id
         ]);
 
-        // Get the username for the sender
         $user = User::find($user_id);
-        
+
         $this->message = $message;
-        $this->username = $user ? $user->name : 'Unknown User';
+        $this->username = $user?->name ?? 'Unknown';
         $this->user_id = $user_id;
         $this->to_id = $to_id;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
     public function broadcastOn(): Channel
     {
-        return new Channel('our-chat');
+        // Broadcast ke kedua pengguna untuk memastikan keduanya menerima pembaruan
+            return new Channel('our-chat');
     }
 
-    /**
-     * The event's broadcast name.
-     */
     public function broadcastAs(): string
     {
         return 'SingleChatEvent';
     }
-    
-    /**
-     * Get the data to broadcast.
-     *
-     * @return array
-     */
+
     public function broadcastWith(): array
     {
+        \Log::info('📡 Broadcasting SingleChatEvent', [
+            'user_id' => $this->user_id,
+            'to_id' => $this->to_id,
+            'username' => $this->username,
+            'message' => $this->message,
+        ]);
+    
         return [
             'message' => $this->message,
             'username' => $this->username,
