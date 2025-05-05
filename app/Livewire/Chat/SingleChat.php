@@ -55,6 +55,7 @@ class SingleChat extends Component
         $this->message = '';
     }
 
+    //error disini gamau jalan
     #[On('echo:our-chat,SingleChatEvent')]
     public function handleIncomingMessage($event)
     {
